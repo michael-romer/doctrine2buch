@@ -22,9 +22,12 @@ class User
     {
         $userData = $this->em->query('SELECT * FROM users WHERE id = ' . $id)->fetch();
 
+        $newUser = new UserEntity();
+        $newUser->setPostRepository($this->em->getPostRepository());
+
         return $this->em->registerUserEntity(
             $id,
-            $this->mapper->populate($userData, new UserEntity())
+            $this->mapper->populate($userData, $newUser)
         );
     }
 }

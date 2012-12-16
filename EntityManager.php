@@ -1,9 +1,11 @@
 <?php
 
 include_once('../repository/User.php');
+include_once('../repository/Post.php');
 include_once('../mapper/User.php');
 
 use Repository\User as UserRepository;
+use Repository\Post as PostRepository;
 use Mapper\User as UserMapper;
 
 class EntityManager
@@ -14,6 +16,7 @@ class EntityManager
     private $pwd;
     private $connection;
     private $userRepository;
+    private $postRepository;
     private $identityMap;
 
     public function __construct($host, $db, $user, $pwd)
@@ -23,6 +26,7 @@ class EntityManager
         $this->pwd = $pwd;
         $this->connection = new \PDO("mysql:host=$host;dbname=$db", $user, $pwd);
         $this->userRepository = null;
+        $this->postRepository = null;
         $this->identityMap = array('users' => array());
     }
 
@@ -59,6 +63,16 @@ class EntityManager
             return $this->query(
                 "INSERT INTO users ($columnsString) VALUES('$valuesString')"
             );
+        }
+    }
+
+    public function getPostRepository()
+    {
+        if (!is_null($this->postRepository)) {
+            return $this->postRepository;
+        } else {
+            $this->postRepository = new PostRepository($this);
+            return $this->postRepository;
         }
     }
 
