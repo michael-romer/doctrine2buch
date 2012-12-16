@@ -8,12 +8,33 @@ class User
     private $lastName;
     private $gender;
     private $namePrefix;
+    private $posts = null;
+    private $postRepository;
 
     const GENDER_MALE = 0;
     const GENDER_FEMALE = 1;
 
     const GENDER_MALE_DISPLAY_VALUE = "Mr.";
     const GENDER_FEMALE_DISPLAY_VALUE = "Mrs.";
+
+    public function setPostRepository($postsRepository)
+    {
+        $this->postRepository = $postsRepository;
+    }
+
+    public function getPostRepository()
+    {
+        return $this->postRepository;
+    }
+
+    public function getPosts()
+    {
+        if (is_null($this->posts)) {
+            $this->posts = $this->postRepository->findByUser($this);
+        }
+
+        return $this->posts;
+    }
 
     public function assembleDisplayName()
     {
