@@ -1,12 +1,28 @@
 <?php
 namespace Entity;
 
+/**
+ * @Entity
+ * @Table(name="users")
+ */
 class User
 {
+    /**
+     * @Id @Column(type="integer")
+     * @GeneratedValue
+     */
     private $id;
+
+    /** @Column(type="string", name="first_name", nullable=true) */
     private $firstName;
+
+    /** @Column(type="string", name="last_name", nullable=true) */
     private $lastName;
+
+    /** @Column(type="string", nullable=true) */
     private $gender;
+
+    /** @Column(type="string", name="name_prefix", nullable=true) */
     private $namePrefix;
 
     const GENDER_MALE = 0;
