@@ -1,5 +1,6 @@
 <?php
 include '../entity/User.php';
+include '../entity/Post.php';
 include '../vendor/autoload.php';
 
 use Doctrine\ORM\Tools\Setup;
@@ -18,7 +19,10 @@ $dbParams = array(
 $config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode);
 $em = EntityManager::create($dbParams, $config);
 $user = $em->getRepository('Entity\User')->findOneById(1);
-echo $user->assembleDisplayName() . '<br />';
-$user->setFirstname('Moritz');
-$em->persist($user);
-$em->flush();
+?>
+<h1><?echo $user->assembleDisplayName(); ?></h1>
+<ul>
+<?php foreach($user->getPosts() as $post) {?>
+<li><?php echo $post->getTitle(); ?></li>
+<?php } ?>
+</ul>

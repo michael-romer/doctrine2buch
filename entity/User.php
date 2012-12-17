@@ -24,8 +24,11 @@ class User
 
     /** @Column(type="string", name="name_prefix", nullable=true) */
     private $namePrefix;
-    private $posts = null;
-    private $postRepository;
+
+    /**
+     * @OneToMany(targetEntity="Entity\Post", mappedBy="user")
+     */
+    private $posts;
 
     const GENDER_MALE = 0;
     const GENDER_FEMALE = 1;
@@ -33,22 +36,18 @@ class User
     const GENDER_MALE_DISPLAY_VALUE = "Mr.";
     const GENDER_FEMALE_DISPLAY_VALUE = "Mrs.";
 
-    public function setPostRepository($postsRepository)
+    public function __construct()
     {
-        $this->postRepository = $postsRepository;
+        $this->posts = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-    public function getPostRepository()
+    public function setPosts($posts)
     {
-        return $this->postRepository;
+        $this->posts = $posts;
     }
 
     public function getPosts()
     {
-        if (is_null($this->posts)) {
-            $this->posts = $this->postRepository->findByUser($this);
-        }
-
         return $this->posts;
     }
 
