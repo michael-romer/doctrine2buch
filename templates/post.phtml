@@ -1,0 +1,14 @@
+<h1><?php echo $post->getTitle(); ?></h1>
+<p><?php echo $post->getContent(); ?></p>
+<h2>Autor</h2>
+<p><a href="<?php echo $app->urlFor('/user', array('id' => $post->getUser()->getId())) ?>"><?php echo $post->getUser()->assembleDisplayName(); ?></a></p>
+<h2>Tags</h2>
+<p>
+<?php foreach ($post->getTags() as $tag) { ?>
+    <a href="<?php echo $app->urlFor('/tag', array('label' => $tag->getLabel()));?>"><?php echo $tag->getLabel(); ?></a>&nbsp;
+<?php } ?>
+</p>
+<?php if ($post->getCategory()) { ?>
+<h2>Kategorie</h2>
+<?php echo $post->getCategory()->getLabel(); ?>
+<?php } ?>

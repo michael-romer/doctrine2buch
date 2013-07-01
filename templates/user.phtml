@@ -1,0 +1,31 @@
+<h1><?php echo $user->assembleDisplayName(); ?></h1>
+<h2>Posts</h2>
+<ul>
+<?php foreach($user->getPosts() as $post) {?>
+<li><a href="<?php echo $app->urlFor('/post', array('id' => $post->getId())); ?>"><?php echo $post->getTitle(); ?></a></li>
+<?php } ?>
+</ul>
+<?php if ($user->getMyFriends()) { ?>
+<h2>Freunde</h2>
+<ul>
+<?php foreach ($user->getMyFriends() as $friend) { ?>
+<li><?php echo $friend->assembleDisplayName(); ?></li>
+<?php } ?>
+</ul>
+<?php } ?>
+<?php if ($user->getLifePartner()) { ?>
+<h2>Lebensparter</h2>
+<?php echo $user->getLifePartner()->assembleDisplayName(); ?>
+<?php } ?>
+<h2>Kategorien</h2>
+<ul>
+<?php foreach($user->getCategories() as $category) {?>
+<li><?php echo $category->getLabel(); ?></li>
+<?php if ($category->getChildren()) { ?>
+<ul>
+<?php foreach($category->getChildren() as $child) {?>
+<li><?php echo $child->getLabel(); ?></li>
+<?php } ?>
+</ul>
+<?php }} ?>
+</ul>

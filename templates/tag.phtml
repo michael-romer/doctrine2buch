@@ -1,0 +1,6 @@
+<h1>Alle Posts mit Tag <?php echo $label ?></h1>
+<ul>
+<?php foreach($posts as $post) {?>
+<li><a href="<?php echo $app->urlFor('/post', array('id' => $post->getId())); ?>"><?php echo $post->getTitle(); ?></a></li>
+<?php } ?>
+</ul>
