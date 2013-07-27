@@ -6,6 +6,10 @@ use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
 
 $config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode);
+$cachingBackend = new \Doctrine\Common\Cache\FilesystemCache('/tmp/doctrine2');
+$config->setMetadataCacheImpl($cachingBackend);
+$config->setQueryCacheImpl($cachingBackend);
+$config->setResultCacheImpl($cachingBackend);
 $em = EntityManager::create($dbParams, $config);
 
 $em->getEventManager()->addEventSubscriber(
@@ -44,8 +48,22 @@ $app->get('/add/post', function () use ($app, $em) {
     $newPost->setTitle('A new post!');
     $newPost->setContent('This is the body of the new post.');
     $em->persist($newPost);
+
+    $user = $em->getRepository('Entity\User')->findOneById(1);
+    $newPost->setUser($user);
     $em->flush();
-    die("Ja!");
+
+    /*
+    $newPost->setUser(null);
+    $em->flush();
+    */
+    $user->getPosts()->removeElement($newPost);
+    if(!$user->getPosts()->contains($newPost))
+        echo "It's gone!";
+    $em->flush();
+    die();
+    //$em->flush();
+    var_dump(count($user->getPosts()));    die("ja");
     //$app->render('post.phtml', array('post' => $post, 'app' => $app));
 })->name('/add/post');
 

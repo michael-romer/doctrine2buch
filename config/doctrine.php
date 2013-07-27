@@ -1,6 +1,6 @@
 <?php
 $paths = array(__DIR__ . "/../src/Entity/");
-$isDevMode = true;
+$isDevMode = false;
 $dbParams = array(
     'driver'   => 'pdo_mysql',
     'user'     => 'root',
