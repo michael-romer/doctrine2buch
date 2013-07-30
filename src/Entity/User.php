@@ -3,6 +3,7 @@ namespace Entity;
 
 /**
  * @Entity
+ * @HasLifecycleCallbacks
  * @Table(name="users")
  */
 class User
@@ -25,8 +26,15 @@ class User
     /** @Column(type="string", name="name_prefix", nullable=true) */
     private $namePrefix;
 
+    /** @Column(type="string", nullable=true) */
+    private $username;
+
+    /** @Column(type="string", nullable=true) */
+    private $password;
+
     /**
      * @OneToMany(targetEntity="Entity\Post", mappedBy="user")
+     * @OrderBy({"id" = "DESC"})
      */
     private $posts;
 
@@ -78,6 +86,8 @@ class User
 
     const GENDER_MALE_DISPLAY_VALUE = "Mr.";
     const GENDER_FEMALE_DISPLAY_VALUE = "Mrs.";
+
+    const GENERATED_PASSWORD_LENGTH = 6;
 
     public function __construct()
     {
@@ -232,6 +242,43 @@ class User
         return $this->myFriends;
     }
 
+    /**
+     * @param mixed $password
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    }
 
+    /**
+     * @return mixed
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
 
+    /**
+     * @param mixed $username
+     */
+    public function setUsername($username)
+    {
+        $this->username = $username;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
+    /** @PrePersist */
+    public function generatePassword()
+    {
+        for($i = 1; $i <= self::GENERATED_PASSWORD_LENGTH; $i++) {
+            $this->password .= chr(rand(65, 90)); // 65 -> A, 90 -> Z
+        }
+    }
 }

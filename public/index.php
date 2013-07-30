@@ -7,9 +7,9 @@ use Doctrine\ORM\EntityManager;
 
 $config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode);
 $cachingBackend = new \Doctrine\Common\Cache\FilesystemCache('/tmp/doctrine2');
-$config->setMetadataCacheImpl($cachingBackend);
+/* $config->setMetadataCacheImpl($cachingBackend);
 $config->setQueryCacheImpl($cachingBackend);
-$config->setResultCacheImpl($cachingBackend);
+$config->setResultCacheImpl($cachingBackend); */
 $em = EntityManager::create($dbParams, $config);
 
 $em->getEventManager()->addEventSubscriber(
@@ -27,6 +27,12 @@ $app->get('/', function () use ($app, $em) {
     $app->render('index.phtml', array('posts' => $posts, 'app' => $app));
 })->name('/');
 
+$app->get('/test/', function () use ($app, $em) {
+    $tag = $em->getRepository('Entity\Post')->findAllPostsWithTag("Mustermann");
+    $em->persist(new Entity\User());
+    $em->flush();
+})->name('/test');
+
 $app->get('/post/:id', function ($id) use ($app, $em) {
     $post = $em->getRepository('Entity\Post')->findOneById($id);
     $app->render('post.phtml', array('post' => $post, 'app' => $app));
@@ -43,8 +49,9 @@ $app->get('/user/:id', function ($id) use ($app, $em) {
     $app->render('user.phtml', array('user' => $user, 'app' => $app));
 })->name('/user');;
 
+
 $app->get('/add/post', function () use ($app, $em) {
-    $newPost = new \Entity\Post();
+    $newPost = new \Entity\VideoPost();
     $newPost->setTitle('A new post!');
     $newPost->setContent('This is the body of the new post.');
     $em->persist($newPost);
