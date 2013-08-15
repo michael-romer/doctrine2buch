@@ -27,51 +27,67 @@ $app->get('/', function () use ($app, $em) {
     $app->render('index.phtml', array('posts' => $posts, 'app' => $app));
 })->name('/');
 
-$app->get('/test/', function () use ($app, $em) {
-    $tag = $em->getRepository('Entity\Post')->findAllPostsWithTag("Mustermann");
-    $em->persist(new Entity\User());
-    $em->flush();
-})->name('/test');
+$app->get('/:label/', function ($label) use ($app, $em) {
+    $tag = $em->getRepository('Entity\Tag')->findOneByLabel($label);
+    $app->render('tag.phtml', array('label' => $label, 'tag' => $tag, 'app' => $app));
+})->name('/tag');
 
 $app->get('/post/:id', function ($id) use ($app, $em) {
     $post = $em->getRepository('Entity\Post')->findOneById($id);
     $app->render('post.phtml', array('post' => $post, 'app' => $app));
 })->name('/post');
 
-$app->get('/:label/', function ($label) use ($app, $em) {
-    $tag = $em->getRepository('Entity\Tag')->findOneByLabel($label);
-    if (!$tag || !$tag->getPosts()) $app->halt(404, "Keine Posts mit diesem Tag gefunden :-/");
-    $app->render('tag.phtml', array('label' => $label, 'posts' => $tag->getPosts(), 'app' => $app));
-})->name('/tag');
-
 $app->get('/user/:id', function ($id) use ($app, $em) {
     $user = $em->getRepository('Entity\User')->findOneById($id);
     $app->render('user.phtml', array('user' => $user, 'app' => $app));
 })->name('/user');;
 
+$app->get('/edit/post/:id', function ($id) use ($app, $em) {
+    $post = $em->getRepository('Entity\Post')->findOneById($id);
+
+    if ($post->getUser()->getId() != 1)
+        die("Not allowed to edit post!");
+
+    $app->render('edit.phtml', array('app' => $app, 'post' => $post));
+})->name('/edit/post-form');
+
+$app->post('/edit/post', function () use ($app, $em) {
+    $post = $em->getRepository('Entity\Post')->findOneById($_POST['id']);
+
+    if ($post->getUser()->getId() != 1)
+        die("Not allowed to edit post!");
+
+    $post->setTitle($_POST['title']);
+    $post->setContent($_POST['text']);
+    $em->flush();
+    $app->redirect('/post/' . $post->getId());
+
+})->name('/edit/post-process');
 
 $app->get('/add/post', function () use ($app, $em) {
-    $newPost = new \Entity\VideoPost();
-    $newPost->setTitle('A new post!');
-    $newPost->setContent('This is the body of the new post.');
-    $em->persist($newPost);
+    $app->render('add.phtml', array('app' => $app));
+})->name('/add/post-form');
 
+$app->post('/add/post', function () use ($app, $em) {
+    $newPost = new \Entity\Post();
+    $newPost->setTitle($_POST['title']);
+    $newPost->setContent($_POST['text']);
+    $em->persist($newPost);
     $user = $em->getRepository('Entity\User')->findOneById(1);
     $newPost->setUser($user);
     $em->flush();
+    $app->redirect('/user/1');
+})->name('/add/post-process');
 
-    /*
-    $newPost->setUser(null);
+$app->get('/delete/post/:id', function ($id) use ($app, $em) {
+    $post = $em->getRepository('Entity\Post')->findOneById($id);
+
+    if ($post->getUser()->getId() != 1)
+        die("Not allowed to delete post!");
+
+    $em->remove($post);
     $em->flush();
-    */
-    $user->getPosts()->removeElement($newPost);
-    if(!$user->getPosts()->contains($newPost))
-        echo "It's gone!";
-    $em->flush();
-    die();
-    //$em->flush();
-    var_dump(count($user->getPosts()));    die("ja");
-    //$app->render('post.phtml', array('post' => $post, 'app' => $app));
-})->name('/add/post');
+    $app->redirect('/user/1');
+})->name('/delete/post');
 
 $app->run();

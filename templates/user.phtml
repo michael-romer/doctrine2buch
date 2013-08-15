@@ -1,12 +1,12 @@
-<h1><?php echo $user->assembleDisplayName(); ?></h1>
+<h1>Home of user <?php echo $user->assembleDisplayName(); ?></h1>
 <h2>Posts</h2>
 <ul>
 <?php foreach($user->getPosts() as $post) {?>
 <li><a href="<?php echo $app->urlFor('/post', array('id' => $post->getId())); ?>"><?php echo $post->getTitle(); ?></a></li>
 <?php } ?>
 </ul>
-<?php if ($user->getMyFriends()) { ?>
-<h2>Freunde</h2>
+<?php if (count($user->getMyFriends()) > 0) { ?>
+<h2>Friends</h2>
 <ul>
 <?php foreach ($user->getMyFriends() as $friend) { ?>
 <li><?php echo $friend->assembleDisplayName(); ?></li>
@@ -14,10 +14,11 @@
 </ul>
 <?php } ?>
 <?php if ($user->getLifePartner()) { ?>
-<h2>Lebensparter</h2>
-<?php echo $user->getLifePartner()->assembleDisplayName(); ?>
+<h2>Life partner</h2>
+<a href="<?php echo $app->urlFor('/user', array('id' => $post->getUser()->getLifePartner()->getId())) ?>"><?php echo $user->getLifePartner()->assembleDisplayName(); ?></a>
 <?php } ?>
-<h2>Kategorien</h2>
+<?php if (count($user->getCategories()) > 0) { ?>
+<h2>Categories</h2>
 <ul>
 <?php foreach($user->getCategories() as $category) {?>
 <li><?php echo $category->getLabel(); ?></li>
@@ -29,3 +30,4 @@
 </ul>
 <?php }} ?>
 </ul>
+<?php } ?>

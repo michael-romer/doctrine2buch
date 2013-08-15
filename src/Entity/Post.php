@@ -4,7 +4,7 @@ namespace Entity;
 /**
  * @Entity(repositoryClass="Repository\Post")
  * @Table(name="posts")
- * @InheritanceType("JOINED")
+ * @InheritanceType("SINGLE_TABLE")
  * @DiscriminatorColumn(name="discr", type="string")
  * @DiscriminatorMap({"text" = "Post", "video" = "VideoPost", "image" = "ImagePost"})
  */
