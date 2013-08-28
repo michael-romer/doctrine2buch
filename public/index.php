@@ -20,7 +20,7 @@ $config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode);
 $em = EntityManager::create($dbParams, $config);
 $user = $em->getRepository('Entity\User')->findOneById(1);
 ?>
-<h1><?echo $user->assembleDisplayName(); ?></h1>
+<h1><?php echo $user->assembleDisplayName(); ?></h1>
 <ul>
 <?php foreach($user->getPosts() as $post) {?>
 <li><?php echo $post->getTitle(); ?></li>
