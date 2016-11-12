@@ -2,7 +2,7 @@
     "require": {
         "doctrine/orm": "2.3.1",
         "slim/slim": "2.*",
-        "petebrowne/slim-layout-view": "0.1.*"
+        "petebrowne/slim-layout-view": "0.3.*"
     },
     "autoload": {
         "psr-0": {
